@@ -1,0 +1,4 @@
+name = RESTful bastides
+description = Bastides module for the RESTful module.
+core = 7.x
+dependencies[] = restful
