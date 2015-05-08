@@ -57,6 +57,22 @@ class RestfulCustomResource extends RestfulEntityBaseNode {
       'property' => 'field_view_angle',
     );
 
+    $public_fields['thumbnail'] = array(
+      'property' => 'field_photograph',
+      'callback' => 'static::thumbnail',
+    );
+
     return $public_fields;
+  }
+
+  public static function thumbnail($wrapper) {
+    $photo_path = $wrapper->field_photograph->value();
+    if (!empty($photo_path['uri'])) {
+      $path = image_style_url('thumbnail', $photo_path['uri']);
+    }
+    else {
+      $path = NULL;
+    }
+    return $path;
   }
 }
