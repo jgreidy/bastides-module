@@ -73,12 +73,11 @@ function bastides_module_get_location_google(&$node, $context) {
     dsm($raw);
     $goods = json_decode($raw);
     dsm($goods);
-    return;
-    // $data = array(
-    //   'lat' => $vals["$lat_index"]['value'],
-    //   'lon' => $vals["$lon_index"]['value'],
-    // );
-    // $wrapper->field_village_location->set($data);
+    $data = array(
+      'lat' => $goods->results[0]->geometry->location->lat,
+      'lon' => $goods->results[0]->geometry->location->lng,
+    );
+    $wrapper->field_village_location->set($data);
   }
 }
 
