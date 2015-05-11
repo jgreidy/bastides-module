@@ -13,3 +13,43 @@ function bastides_module_ctools_plugin_directory($module, $plugin) {
     return 'plugins/' . $plugin;
   }
 }
+
+
+/**
+ * Implements hook_action_info
+ * @return array associative array of action descriptions
+ */
+function bastides_module_action_info() {
+  return array(
+    'bastides_module_get_location' => array(
+      'type' => 'node',
+      'label' => t('Look up village lat,lon from city name'),
+      'behavior' => array('changes_property'),
+      'configurable' => FALSE,
+      'vbo_configurable' => FALSE,
+      'triggers' => array('any'),
+    ),
+  );
+}
+
+function bastides_module_get_location(&$node, $context) {
+  $wrapper = entity_metadata_wrapper('node', $node);
+  if ($wrapper->type->value() == 'village_metadata') {
+    $village = urlencode($wrapper->field_village_name->value());
+    $request = "http://api.geonames.org/search?name_equals=$village&country=FR&username=jgreidy";
+    $raw = file_get_contents($request);
+    if ($raw === FALSE) return;
+    $p = xml_parser_create();
+    $ok = xml_parse_into_struct($p, $raw, $vals, $index);
+    xml_parser_free($p);
+    if ($ok != 1) return;
+    if (empty($index['LAT'][0]) || empty($index['LNG'][0])) return;
+    $lat_index = $index['LAT'][0];
+    $lon_index = $index['LNG'][0];
+    $data = array(
+      'lat' => $vals["$lat_index"]['value'],
+      'lon' => $vals["$lon_index"]['value'],
+    );
+    $wrapper->field_village_location->set($data);
+  }
+}
