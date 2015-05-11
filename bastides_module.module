@@ -34,7 +34,7 @@ function bastides_module_action_info() {
       'label' => t('Look up village lat,lon from city name with maps.googleapis.com'),
       'behavior' => array('changes_property'),
       'configurable' => FALSE,
-      'vbo_configurable' => FALSE,
+      'vbo_configurable' => TRUE,
       'triggers' => array('any'),
     ),
   );
@@ -66,7 +66,7 @@ function bastides_module_get_location_google(&$node, $context) {
   $wrapper = entity_metadata_wrapper('node', $node);
   if ($wrapper->type->value() == 'village_metadata') {
     $village = urlencode($wrapper->field_village_name->value());
-    $api_key = variable_get('geofield_gmap_google_api_key', 'no_api_key');
+    $api_key = !empty($options['bastides_module_google_api_key']) ? $options['bastides_module_google_api_key'] : '';
     $request = "https://maps.googleapis.com/maps/api/geocode/json?address=$village&components=city:FR&key=$api_key";
     $raw = file_get_contents($request);
     if ($raw === FALSE) return;
@@ -80,4 +80,29 @@ function bastides_module_get_location_google(&$node, $context) {
     // );
     // $wrapper->field_village_location->set($data);
   }
+}
+
+function bastides_module_get_location_google_form($options) {
+  $form = array();
+  $form['bastides_module_google_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('API key for maps.googleapis.com'),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#required' => TRUE,
+    '#default_value' => !empty($options['bastides_module_google_api_key']) ? $options['bastides_module_google_api_key'] : '',
+  );
+
+  return $form;
+}
+
+function bastides_module_get_bastides_module_form($settings, &$form_state) {
+  $form = bastides_module_get_location_google_form($settings['settings']);
+  return $form;
+}
+
+function bastides_module_get_location_google_submit($form, $form_state) {
+  $return = array();
+  $return['bastides_module_google_api_key'] = $form_state['values']['bastides_module_google_api_key'];
+  return $return;
 }
