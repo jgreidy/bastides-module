@@ -23,7 +23,15 @@ function bastides_module_action_info() {
   return array(
     'bastides_module_get_location' => array(
       'type' => 'node',
-      'label' => t('Look up village lat,lon from city name'),
+      'label' => t('Look up village lat,lon from city name with api.geonames.org'),
+      'behavior' => array('changes_property'),
+      'configurable' => FALSE,
+      'vbo_configurable' => FALSE,
+      'triggers' => array('any'),
+    ),
+    'bastides_module_get_location_google' => array(
+      'type' => 'node',
+      'label' => t('Look up village lat,lon from city name with maps.googleapis.com'),
       'behavior' => array('changes_property'),
       'configurable' => FALSE,
       'vbo_configurable' => FALSE,
@@ -51,5 +59,25 @@ function bastides_module_get_location(&$node, $context) {
       'lon' => $vals["$lon_index"]['value'],
     );
     $wrapper->field_village_location->set($data);
+  }
+}
+
+function bastides_module_get_location_google(&$node, $context) {
+  $wrapper = entity_metadata_wrapper('node', $node);
+  if ($wrapper->type->value() == 'village_metadata') {
+    $village = urlencode($wrapper->field_village_name->value());
+    $api_key = variable_get('geofield_gmap_google_api_key', 'no_api_key');
+    $request = "https://maps.googleapis.com/maps/api/geocode/json?address=$village&components=city:FR&key=$api_key";
+    $raw = file_get_contents($request);
+    if ($raw === FALSE) return;
+    dsm($raw);
+    $goods = json_decode($raw);
+    dsm($goods);
+    return;
+    // $data = array(
+    //   'lat' => $vals["$lat_index"]['value'],
+    //   'lon' => $vals["$lon_index"]['value'],
+    // );
+    // $wrapper->field_village_location->set($data);
   }
 }
