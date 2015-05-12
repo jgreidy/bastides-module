@@ -1,6 +1,6 @@
 <?php
 
-class RestfulCustomResource extends RestfulEntityBaseNode {
+class RestfulImageMetadataResource extends RestfulEntityBaseNode {
 
   /**
    * Overrides RestfulEntityBaseNode::publicFieldsInfo().
