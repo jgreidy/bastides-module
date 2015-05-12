@@ -70,9 +70,9 @@ function bastides_module_get_location_google(&$node, $context) {
     $request = "https://maps.googleapis.com/maps/api/geocode/json?address=$village&components=city:FR&key=$api_key";
     $raw = file_get_contents($request);
     if ($raw === FALSE) return;
-    dsm($raw);
     $goods = json_decode($raw);
-    dsm($goods);
+    if (empty($goods->results[0]->geometry->location->lat)) return;
+    if (empty($goods->results[0]->geometry->location->lng)) return;
     $data = array(
       'lat' => $goods->results[0]->geometry->location->lat,
       'lon' => $goods->results[0]->geometry->location->lng,
@@ -89,7 +89,7 @@ function bastides_module_get_location_google_form($options) {
     '#size' => 60,
     '#maxlength' => 128,
     '#required' => TRUE,
-    '#default_value' => !empty($options['bastides_module_google_api_key']) ? $options['bastides_module_google_api_key'] : '',
+    '#default_value' => !empty($options['bastides_module_google_api_key']) ? $options['bastides_module_google_api_key'] : variable_get('bastides_module_api_key', ''),
   );
 
   return $form;
@@ -103,5 +103,6 @@ function bastides_module_get_bastides_module_form($settings, &$form_state) {
 function bastides_module_get_location_google_submit($form, $form_state) {
   $return = array();
   $return['bastides_module_google_api_key'] = $form_state['values']['bastides_module_google_api_key'];
+  variable_set('bastides_module_api_key', $form_state['values']['bastides_module_google_api_key']);
   return $return;
 }
