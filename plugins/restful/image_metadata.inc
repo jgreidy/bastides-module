@@ -7,5 +7,5 @@ $plugin = array(
   'entity_type' => 'node',
   'bundle' => 'image_metadata',
   'description' => t('Export the Bastide Image Metadata content type.'),
-  'class' => 'RestfulCustomResource',
+  'class' => 'RestfulImageMetadataResource',
 );
