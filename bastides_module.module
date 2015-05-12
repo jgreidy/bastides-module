@@ -37,7 +37,34 @@ function bastides_module_action_info() {
       'vbo_configurable' => TRUE,
       'triggers' => array('any'),
     ),
+    'bastides_module_default_location' => array(
+      'type' => 'node',
+      'label' => t('Assign default lat,lon where missing'),
+      'behavior' => array('changes_property'),
+      'configurable' => FALSE,
+      'vbo_configurable' => FALSE,
+      'triggers' => array('any'),
+    ),
   );
+}
+
+function bastides_module_default_location(&$node, $context) {
+  $wrapper = entity_metadata_wrapper('node', $node);
+  if ($wrapper->type->value() == 'village_metadata') {
+    $location = $wrapper->field_village_location->value();
+    if (empty($location['lat'])) {
+        // Ajaccio - southernmost French city on Corsica
+        $data = array(
+          'lat' => 41.9267,
+          'lon' => 8.7369,
+        );
+        $wrapper->field_village_location->set($data);
+      }
+    else {
+      $whatzit = $wrapper->field_village_location->value();
+      dsm($whatzit);
+    }
+  }
 }
 
 function bastides_module_get_location(&$node, $context) {
