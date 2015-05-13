@@ -38,6 +38,15 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
       'callback' => 'static::thumbnail',
     );
 
+    $public_fields['image'] = array(
+      'property' => 'field_photograph',
+      'process_callbacks' => array(
+        array($this, 'imageProcess'),
+        ),
+      // this will add 3 image variants in the output
+      'image_styles' => array('thumbnail', 'medium', 'large'),
+      );
+
     $public_fields['village_info'] = array(
       'property' => 'field_village_reference',
       'resource' => array(
