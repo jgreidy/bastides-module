@@ -33,16 +33,8 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
       'property' => 'field_view_angle',
     );
 
-    $public_fields['thumbnail'] = array(
-      'property' => 'field_photograph',
-      'callback' => 'static::thumbnail',
-    );
-
     $public_fields['image'] = array(
       'property' => 'field_photograph',
-      // 'process_callbacks' => array(
-      //   array($this, 'imageProcess'),
-      //   ),
       // this will add 3 image variants in the output
       'image_styles' => array('thumbnail', 'medium', 'large'),
       );
@@ -61,16 +53,5 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
       );
 
     return $public_fields;
-  }
-
-  public static function thumbnail($wrapper) {
-    $photo_path = $wrapper->field_photograph->value();
-    if (!empty($photo_path['uri'])) {
-      $path = image_style_url('thumbnail', $photo_path['uri']);
-    }
-    else {
-      $path = NULL;
-    }
-    return $path;
   }
 }
