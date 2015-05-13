@@ -12,20 +12,8 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
       'property' => 'field_ssid',
     );
 
-    $public_fields['founder'] = array(
-      'property' => 'field_founder',
-    );
-
-    $public_fields['senechal'] = array(
-      'property' => 'field_senechal',
-    );
-
     $public_fields['year'] = array(
       'property' => 'field_photo_year',
-    );
-
-    $public_fields['date_founded'] = array(
-      'property' => 'field_date_founded',
     );
 
     $public_fields['description'] = array(
@@ -34,18 +22,6 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
 
     $public_fields['village'] = array(
       'property' => 'field_village',
-    );
-
-    $public_fields['notes'] = array(
-      'property' => 'field_notes',
-    );
-
-    $public_fields['market_square'] = array(
-      'property' => 'field_market_square_details',
-    );
-
-    $public_fields['site_plan'] = array(
-      'property' => 'field_plan_and_site_details',
     );
 
     $public_fields['location'] = array(
@@ -61,6 +37,28 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
       'property' => 'field_photograph',
       'callback' => 'static::thumbnail',
     );
+
+    $public_fields['image'] = array(
+      'property' => 'field_photograph',
+      'process_callbacks' => array(
+        array($this, 'imageProcess'),
+        ),
+      // this will add 3 image variants in the output
+      'image_styles' => array('thumbnail', 'medium', 'large'),
+      );
+
+    $public_fields['village_info'] = array(
+      'property' => 'field_village_reference',
+      'resource' => array(
+        // the bundle of the entitiy
+        'village_metadata' => array(
+          // the nameof the resource to map to
+          'name' => 'village_metadata',
+          // determines if the entire resource should appear, or only the ID
+          'full_view' => TRUE,
+          ),
+        ),
+      );
 
     return $public_fields;
   }
