@@ -38,6 +38,19 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
       'callback' => 'static::thumbnail',
     );
 
+    $public_fields['village_info'] = array(
+      'property' => 'field_village_reference',
+      'resource' => array(
+        // the bundle of the entitiy
+        'village_metadata' => array(
+          // the nameof the resource to map to
+          'name' => 'village_metadata',
+          // determines if the entire resource should appear, or only the ID
+          'full_view' => TRUE,
+          ),
+        ),
+      );
+
     return $public_fields;
   }
 
