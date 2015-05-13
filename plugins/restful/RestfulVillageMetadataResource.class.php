@@ -20,7 +20,7 @@ class RestfulVillageMetadataResource extends RestfulEntityBaseNode {
       'property' => 'field_village_founded',
     );
 
-    $public_fields['village'] = array(
+    $public_fields['name'] = array(
       'property' => 'field_village_name',
     );
 
