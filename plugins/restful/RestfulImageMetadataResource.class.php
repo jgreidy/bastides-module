@@ -52,6 +52,17 @@ class RestfulImageMetadataResource extends RestfulEntityBaseNode {
         ),
       );
 
+    $public_fields['streetview'] = array(
+      'callback' => 'static::streetview',
+    );
+
     return $public_fields;
+  }
+
+  public static function streetview($wrapper) {
+    // find the lat and lon
+    $loc = $wrapper->field_media_location->value();
+
+    return array('streetview' => $loc, 1, 2, 3);
   }
 }
